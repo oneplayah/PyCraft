@@ -1,0 +1,42 @@
+entrypoint="README.md"
+
+compile="python3 pythonGenerator.py && node javascriptGenerator.js"
+
+run="node scene/server.js"
+
+hidden = [".config", "scene", "package.json", "package-lock.json", "pythonGenerator.py", "javascriptGenerator.js", "venv", "**/__pycache__", "**/.mypy_cache", "**/*.pyc", "poetry.lock", "pyproject.toml"]
+
+language = "python3"
+
+[nix]
+channel = "stable-21_11"
+
+[packager]
+language = "nodejs"
+
+  [packager.features]
+  packageSearch = true
+  guessImports = true
+  enabledForHosting = false
+
+
+[languages.javascript]
+pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
+
+  [languages.javascript.languageServer]
+  start = [ "typescript-language-server", "--stdio" ]
+
+[languages.python3]
+pattern = "**/*.py"
+syntax = "python"
+
+  [languages.python3.languageServer]
+  start = ["pylsp"]
+
+[env]
+VIRTUAL_ENV = "/home/runner/${REPL_SLUG}/venv"
+PATH = "${VIRTUAL_ENV}/bin"
+PYTHONPATH="${VIRTUAL_ENV}/lib/python3.8/site-packages"
+REPLIT_POETRY_PYPI_REPOSITORY="https://package-proxy.replit.com/pypi/"
+MPLBACKEND="TkAgg"
+POETRY_CACHE_DIR="${HOME}/${REPL_SLUG}/.cache/pypoetry"
